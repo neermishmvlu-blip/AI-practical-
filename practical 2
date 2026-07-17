@@ -1,0 +1,149 @@
+from collections import deque
+
+
+
+# Function to display puzzle state def print_state(state):
+for i in range(0, 9, 3):
+
+print(state[i], state[i + 1], state[i + 2]) print()
+
+
+# Function to find possible next states def get_neighbors(state):
+neighbors = []
+
+
+
+# Find position of blank tile blank_index = state.index(0)
+
+
+# Possible moves: Up, Down, Left, Right moves = {
+Up": -3,
+
+"Down": 3,
+
+"Left": -1,
+
+"Right": 1
+
+}
+
+
+
+for move, position_change in moves.items(): new_index = blank_index + position_change
+return neighbors
+
+
+
+# BFS function
+
+def bfs(initial_state, goal_state): queue = deque()
+
+
+# Each queue item contains: current_state, path queue.append((initial_stat
+# Main Program initial_state = (
+	1,	2,	3,
+	4,	0,	5,
+	6,	7,	8
+)			
+
+
+
+goal_state = (
+
+	1,	2,	3,
+	4,	5,	6,
+	7,	8,	0
+)			
+
+print("Step", current_step, "- Move:", move) print_state(state)
+current_step += 1
+
+
+
+print("Goal reached successfully.") print("Total number of moves:", len(solution)) print("neeraj")
+else:
+
+print("No solution found.")
+
+B.
+CODE -:
+def dfs(jug1, jug2, target):
+
+stack = [((0, 0), [])]	# (current_state, path) visited = set()
+
+
+while stack:
+
+(x, y), path = stack.pop()
+
+
+
+if (x, y) in visited: continue
+
+
+visited.add((x, y)) path = path + [(x, y)]
+
+
+# Goal check
+
+if x == target or y == target:
+return path
+
+
+
+next_states = [
+
+(jug1, y),	# Fill Jug 1
+
+(x, jug2),	# Fill Jug 2
+
+(0, y),	# Empty Jug 1
+
+(x, 0),	# Empty Jug 2
+
+print("\nGoal Achieved Successfully!") print("Solution Path:")
+for state in solution: print(state) print("neeraj")
+else:
+
+print("\nNo solution found.")
+
+C.
+CODE-: 
+import heapq
+
+graph = {
+    'Mumbai': [('Pune', 150), ('Hyderabad', 710)],
+    'Pune': [('Mumbai', 150), ('Bangalore', 840)],
+    'Hyderabad': [('Mumbai', 710), ('Bangalore', 570)],
+    'Bangalore': []
+}
+
+def ucs(start, goal):
+
+    queue = [(0, start, [start])]
+    visited = []
+
+    while queue:
+        cost, city, path = heapq.heappop(queue)
+
+        if city == goal:
+            return cost, path
+
+        if city not in visited:
+            visited.append(city)
+
+            for neighbor, distance in graph[city]:
+                heapq.heappush(
+                    queue,
+                    (
+                        cost + distance,
+                        neighbor,
+                        path + [neighbor]
+                    )
+                )
+
+cost, path = ucs("Mumbai", "Bangalore")
+print("Least-cost path:")
+print("Path:", " -> ".join(path))
+print("Total Distance:", cost, "km")
+print("Neeraj mishra")
