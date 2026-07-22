@@ -1,0 +1,166 @@
+from collections import deque
+import heapq
+
+# Graph with edge costs
+graph = {
+    "MVLU College": [("Old Nagardas Road", 1), ("Andheri Subway", 3)],
+    "Old Nagardas Road": [("MVLU College", 1), ("Junction", 4)],
+    "Andheri Subway": [("MVLU College", 3), ("Village Road", 2)],
+    "Junction": [("Old Nagardas Road", 4), ("Village Road", 3)],
+    "Village Road": [("Junction", 3), ("Andheri Subway", 2), ("Home", 2)],
+    "Home": []
+}
+
+# Heuristic values
+heuristic = {
+    "MVLU College": 7,
+    "Old Nagardas Road": 6,
+    "Andheri Subway": 2,
+    "Junction": 4,
+    "Village Road": 1,
+    "Home": 0
+}
+
+# ---------------- BFS ----------------
+
+def bfs(start, goal):
+    q = deque([(start, [start], 0)])
+    visited = set()
+    explored = 0
+
+    while q:
+        node, path, cost = q.popleft()
+
+        if node in visited:
+            continue
+
+        visited.add(node)
+        explored += 1
+
+        if node == goal:
+            return path, cost, explored
+
+        for nxt, w in graph[node]:
+            if nxt not in visited:
+                q.append((nxt, path + [nxt], cost + w))
+
+# ---------------- DFS ----------------
+
+def dfs(start, goal):
+    stack = [(start, [start], 0)]
+    visited = set()
+    explored = 0
+
+    while stack:
+        node, path, cost = stack.pop()
+
+        if node in visited:
+            continue
+
+        visited.add(node)
+        explored += 1
+
+        if node == goal:
+            return path, cost, explored
+
+        for nxt, w in reversed(graph[node]):
+            if nxt not in visited:
+                stack.append((nxt, path + [nxt], cost + w))
+
+# ---------------- UCS ----------------
+
+def ucs(start, goal):
+    pq = [(0, start, [start])]
+    visited = set()
+    explored = 0
+
+    while pq:
+        cost, node, path = heapq.heappop(pq)
+
+        if node in visited:
+            continue
+
+        visited.add(node)
+        explored += 1
+
+        if node == goal:
+            return path, cost, explored
+
+        for nxt, w in graph[node]:
+            if nxt not in visited:
+                heapq.heappush(pq, (cost + w, nxt, path + [nxt]))
+
+# ---------------- Greedy Best First Search ----------------
+
+def greedy(start, goal):
+    pq = [(heuristic[start], start, [start], 0)]
+    visited = set()
+    explored = 0
+
+    while pq:
+        h, node, path, cost = heapq.heappop(pq)
+
+        if node in visited:
+            continue
+
+        visited.add(node)
+        explored += 1
+
+        if node == goal:
+            return path, cost, explored
+
+        for nxt, w in graph[node]:
+            if nxt not in visited:
+                heapq.heappush(
+                    pq,
+                    (heuristic[nxt], nxt, path + [nxt], cost + w)
+                )
+
+# ---------------- A* Search ----------------
+
+def astar(start, goal):
+    pq = [(heuristic[start], 0, start, [start])]
+    visited = set()
+    explored = 0
+
+    while pq:
+        f, g, node, path = heapq.heappop(pq)
+
+        if node in visited:
+            continue
+
+        visited.add(node)
+        explored += 1
+
+        if node == goal:
+            return path, g, explored
+
+        for nxt, w in graph[node]:
+            if nxt not in visited:
+                new_g = g + w
+                new_f = new_g + heuristic[nxt]
+                heapq.heappush(
+                    pq,
+                    (new_f, new_g, nxt, path + [nxt])
+                )
+
+# ---------------- Run All Algorithms ----------------
+
+algorithms = {
+    "Breadth First Search (BFS)": bfs,
+    "Depth First Search (DFS)": dfs,
+    "Uniform Cost Search (UCS)": ucs,
+    "Greedy Best First Search": greedy,
+    "A* Search": astar
+}
+
+for name, algo in algorithms.items():
+    path, cost, nodes = algo("MVLU College", "Home")
+
+    print("\n" + "=" * 50)
+    print(name)
+    print("=" * 50)
+    print("Path            :", " -> ".join(path))
+    print("Total Path Cost :", cost)
+    print("Nodes Explored  :", nodes)
+    print("Neeraj")
