@@ -1,0 +1,114 @@
+Q1. 
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+# Load dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+X,
+y,
+test_size=0.3,
+random_state=1
+)
+# Create model
+model = DecisionTreeClassifier()
+# Train model
+model.fit(X_train, y_train)
+# Display accuracy
+print("Training Accuracy:", model.score(X_train, y_train) * 100)
+print("Testing Accuracy:", model.score(X_test, y_test) * 100)
+# Prediction
+prediction = model.predict([X_test[0]])
+print("Predicted Class:", prediction[0])
+Second Dataset : 
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import LabelEncoder
+# Load dataset
+data = pd.read_csv("NetFlix.csv")
+# Display first few rows
+print(data.head())
+# Select required columns
+data = data[['release_year', 'rating', 'duration', 'type']].dropna()
+# Convert duration column
+if data['duration'].dtype == 'object':
+data['duration'] = data['duration'].str.extract(r'(\d+)')[0].astype(int)
+else:
+data['duration'] = data['duration'].astype(int)
+# Encode categorical columns
+rating_encoder = LabelEncoder()
+data['rating'] = rating_encoder.fit_transform(data['rating'])
+type_encoder = LabelEncoder()
+data['type'] = type_encoder.fit_transform(data['type'])
+# Features and Target
+X = data[['release_year', 'rating', 'duration']]
+y = data['type']
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+X,
+y,
+test_size=0.3,
+random_state=1
+)
+# Create Decision Tree model
+model = DecisionTreeClassifier(random_state=1)
+# Train model
+model.fit(X_train, y_train)
+# Accuracy
+print("\nTraining Accuracy:", round(model.score(X_train, y_train) * 100, 2), 
+"%")
+print("Testing Accuracy:", round(model.score(X_test, y_test) * 100, 2), "%")
+# Prediction
+prediction = model.predict([X_test.iloc[0]])
+print("\nPredicted Type :", type_encoder.inverse_transform(prediction)[0])
+print("Actual Type :", type_encoder.inverse_transform([y_test.iloc[0]])[0])
+
+Q2. 
+from sklearn.model_selection import cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import LabelEncoder
+# Load dataset
+iris = pd.read_csv("iris.csv")
+# Features and Target
+X = iris[['sepal_length', 'sepal_width', 'petal_length', 'petal_width']]
+y = iris['species']
+# Convert species names into numbers
+le = LabelEncoder()
+y = le.fit_transform(y)
+# Create classification model
+model = KNeighborsClassifier()
+# Apply 5-fold cross-validation
+scores = cross_val_score(model, X, y, cv=5)
+print("Accuracy scores for each fold:")
+print(scores)
+print("Average Accuracy:", round(scores.mean() * 100, 2), "%")
+Second Dataset :
+import pandas as pd
+from sklearn.model_selection import cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import LabelEncoder
+# Load dataset
+data = pd.read_csv("NetFlix.csv")
+# Select required columns
+data = data[['release_year', 'rating', 'duration', 'type']].dropna()
+# duration is already numeric
+data['duration'] = data['duration'].astype(int)
+# Encode categorical columns
+rating_encoder = LabelEncoder()
+data['rating'] = rating_encoder.fit_transform(data['rating'])
+type_encoder = LabelEncoder()
+data['type'] = type_encoder.fit_transform(data['type'])
+# Features and Target
+X = data[['release_year', 'rating', 'duration']]
+y = data['type']
+# Create KNN model
+model = KNeighborsClassifier(n_neighbors=5)
+# Apply 5-fold cross-validation
+scores = cross_val_score(model, X, y, cv=5)
+print("Accuracy scores for each fold:")
+print(scores)
+print("Average Accuracy:", round(scores.mean() * 100, 2), "%")
